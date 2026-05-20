@@ -87,3 +87,5 @@ app.get('/api/generate', async (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 PixelForge AI running at http://localhost:${PORT}`);
 });
+
+app.use('/static', express.static(path.join(__dirname, 'static')));
