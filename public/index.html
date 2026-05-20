@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelForge AI</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif
+        }
+
+        html {
+            overflow-y: scroll;
+            scrollbar-width: none
+        }
+
+        html::-webkit-scrollbar {
+            display: none
+        }
+
+        body {
+            background: #FFF9F5;
+            color: #1A1A1A;
+            overflow-y: scroll;
+            scrollbar-width: none
+        }
+
+        body::-webkit-scrollbar {
+            display: none
+        }
+
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 100;
+            height: 64px;
+            background: #FFFFFF;
+            border-bottom: 1px solid #EDE6DE;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            transition: all .3s
+        }
+
+        .navbar.scrolled {
+            height: 56px;
+            box-shadow: 0 2px 12px #EDE6DE
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 9px;
+            text-decoration: none;
+            flex-shrink: 0;
+            min-width: 0
+        }
+
+        .logo-mark {
+            display: flex;
+            align-items:center;
+            gap: 2px;
+            flex-shrink: 0
+        }
+
+        .logo-bar {
+            background: #1A1A1A;
+            border-radius: 1.5px
+        }
+
+        .logo-bar-h {
+            width: 24px;
+            height: 7px
+        }
+
+        .logo-bar-v {
+            width: 7px;
+            height: 24px
+        }
+
+        .logo-dot {
+            width: 9px;
+            height: 9px;
+            background: #F0A080;
+            border-radius: 2px
+        }
+
+        .logo-text {
+            font-size: 19px;
+            font-weight: 800;
+            color: #1A1A1A;
+            letter-spacing: -0.3px;
+            white-space: nowrap
+        }
+
+        .logo-light {
+            font-weight: 300;
+            color: #A0A0A0
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-shrink: 0
+        }
+
+        .btn-solid {
+            background: #1A1A1A;
+            color: #FFFFFF;
+            border: 1.5px solid #1A1A1A;
+            padding: 7px 14px;
+            border-radius: 8px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all .15s;
+            letter-spacing: .2px;
+            white-space: nowrap;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 4px
+        }
+
+        .btn-solid:hover {
+            background: #333333
+        }
+
+        .btn-solid svg {
+            width: 11px;
+            height: 11px;
+            stroke: #FFFFFF;
+            fill: none;
+            stroke-width: 2.5;
+            stroke-linecap: round;
+            stroke-linejoin: round
+        }
+
+        .hero {
+            padding: 120px 24px 80px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center
+        }
+
+        .hero-bg {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            overflow: hidden
+        }
+
+        .h-circle {
+            position: absolute;
+            border-radius: 50%;
+            will-change: transform
+        }
+
+        .hc1 {
+            width: 400px;
+            height: 400px;
+            background: #FDEBD0;
+            top: -120px;
+            right: -80px;
+            animation: drift1 8s ease-in-out infinite
+        }
+
+        .hc2 {
+            width: 250px;
+            height: 250px;
+            background: #F5CBA7;
+            bottom: 20px;
+            left: -60px;
+            animation: drift2 10s ease-in-out infinite
+        }
+
+        .hc3 {
+            width: 100px;
+            height: 100px;
+            background: #F0A080;
+            top: 50%;
+            left: 10%;
+            animation: drift3 6s ease-in-out infinite
+        }
+
+        .h-diamond {
+            position: absolute;
+            will-change: transform
+        }
+
+        .hd1 {
+            width: 20px;
+            height: 20px;
+            background: #F0A080;
+            top: 18%;
+            right: 22%;
+            animation: floatSpin1 5s ease-in-out infinite
+        }
+
+        .hd2 {
+            width: 14px;
+            height: 14px;
+            background: #F5CBA7;
+            bottom: 28%;
+            left: 18%;
+            animation: floatSpin2 7s ease-in-out infinite
+        }
+
+        .h-sm {
+            position: absolute;
+            border-radius: 50%;
+            will-change: transform
+        }
+
+        .hs1 {
+            width: 12px;
+            height: 12px;
+            background: #FDEBD0;
+            top: 30%;
+            left: 25%;
+            animation: floatUp1 4s ease-in-out infinite
+        }
+
+        .hs2 {
+            width: 8px;
+            height: 8px;
+            background: #F0A080;
+            bottom: 35%;
+            right: 15%;
+            animation: floatUp2 6s ease-in-out infinite
+        }
+
+        @keyframes drift1 {
+            0%, 100% { transform: translate(0, 0) }
+            25% { transform: translate(-20px, 15px) }
+            50% { transform: translate(10px, 25px) }
+            75% { transform: translate(-10px, 10px) }
+        }
+
+        @keyframes drift2 {
+            0%, 100% { transform: translate(0, 0) }
+            25% { transform: translate(15px, -20px) }
+            50% { transform: translate(-10px, -15px) }
+            75% { transform: translate(20px, -10px) }
+        }
+
+        @keyframes drift3 {
+            0%, 100% { transform: translate(0, 0) }
+            25% { transform: translate(10px, 15px) }
+            50% { transform: translate(-15px, 10px) }
+            75% { transform: translate(15px, -20px) }
+        }
+
+        @keyframes floatSpin1 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) }
+            50% { transform: translate(8px, -12px) rotate(180deg) }
+        }
+
+        @keyframes floatSpin2 {
+            0%, 100% { transform: translate(0, 0) rotate(0deg) }
+            50% { transform: translate(-10px, 8px) rotate(-180deg) }
+        }
+
+        @keyframes floatUp1 {
+            0%, 100% { transform: translate(0, 0) }
+            50% { transform: translate(5px, -10px) }
+        }
+
+        @keyframes floatUp2 {
+            0%, 100% { transform: translate(0, 0) }
+            50% { transform: translate(-6px, 8px) }
+        }
+
+        .hero-inner {
+            position: relative;
+            z-index: 1;
+            max-width: 700px;
+            margin: 0 auto
+        }
+
+        .hero-tag {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: #FDEBD0;
+            color: #8B5E3C;
+            padding: 6px 16px;
+            border-radius: 24px;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: .5px;
+            text-transform: uppercase;
+            margin-bottom: 28px
+        }
+
+        .hero-tag-dot {
+            width: 6px;
+            height: 6px;
+            background: #F0A080;
+            border-radius: 50%
+        }
+
+        .hero-h1 {
+            font-size: 72px;
+            font-weight: 900;
+            color: #1A1A1A;
+            letter-spacing: -3px;
+            line-height: 1;
+            margin-bottom: 20px
+        }
+
+        .hero-h1 em {
+            font-style: normal;
+            display: inline-block;
+            background: #F0A080;
+            color: #FFFFFF;
+            padding: 2px 16px;
+            border-radius: 10px;
+            line-height: 1.2;
+            position: relative
+        }
+
+        .hero-h1 em::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 20px;
+            width: 30px;
+            height: 4px;
+            background: #F0A080;
+            border-radius: 2px
+        }
+
+        .hero-p {
+            color: #8D8D8D;
+            font-size: 17px;
+            line-height: 1.7;
+            max-width: 480px;
+            margin: 0 auto 36px
+        }
+
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 16px;
+            flex-wrap: nowrap
+        }
+
+        .btn-primary {
+            background: #1A1A1A;
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 40px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            letter-spacing: -.2px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            text-decoration: none
+        }
+
+        .btn-primary:hover {
+            background: #333333;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 0 #EDE6DE
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 0 #EDE6DE
+        }
+
+        .btn-primary svg {
+            width: 16px;
+            height: 16px;
+            transition: transform .2s
+        }
+
+        .btn-primary:hover svg {
+            transform: translateX(3px)
+        }
+
+        .btn-secondary-cta {
+            background: #FFFFFF;
+            color: #1A1A1A;
+            border: 1.5px solid #D5D5D5;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all .2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+            text-decoration: none
+        }
+
+        .btn-secondary-cta:hover {
+            border-color: #1A1A1A;
+            transform: translateY(-2px)
+        }
+
+        .hero-free-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-top: 6px;
+            padding: 6px 16px;
+            background: #E8F5E9;
+            border: 1px solid #C8E6C9;
+            border-radius: 20px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #2E7D32;
+            letter-spacing: .3px
+        }
+
+        .hero-free-badge svg {
+            width: 12px;
+            height: 12px;
+            stroke: #2E7D32;
+            fill: none;
+            stroke-width: 2.5
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media(max-width:768px) {
+            .navbar { padding: 0 16px; gap: 8px }
+            .logo { gap: 6px }
+            .logo-bar-h { width: 20px; height: 6px }
+            .logo-bar-v { width: 6px; height: 20px }
+            .logo-dot { width: 7px; height: 7px }
+            .logo-text { font-size: 16px }
+            .nav-right { gap: 6px }
+            .btn-solid { padding: 7px 12px; font-size: 11px }
+            .hero-h1 { font-size: 44px; letter-spacing: -2px }
+            .hero-h1 em { padding: 2px 10px }
+            .hero-p { font-size: 15px }
+            .btn-primary { padding: 12px 24px; font-size: 13px; border-radius: 10px }
+            .btn-secondary-cta { padding: 12px 20px; font-size: 13px; border-radius: 10px }
+            .hero-cta { gap: 8px }
+        }
+
+        @media(max-width:500px) {
+            .navbar { padding: 0 12px; gap: 4px }
+            .logo-bar-h { width: 18px; height: 5px }
+            .logo-bar-v { width: 5px; height: 18px }
+            .logo-dot { width: 6px; height: 6px }
+            .logo-text { font-size: 14px }
+            .nav-right { gap: 5px }
+            .btn-solid { padding: 6px 10px; font-size: 10px }
+            .btn-solid svg { width: 10px; height: 10px }
+            .hero-h1 { font-size: 36px }
+            .btn-primary { padding: 10px 18px; font-size: 12px; border-radius: 9px; gap: 5px }
+            .btn-secondary-cta { padding: 10px 16px; font-size: 12px; border-radius: 9px }
+            .hero-cta { gap: 6px; flex-wrap: wrap; justify-content: center }
+            .hc1 { width: 200px; height: 200px }
+            .hc2 { width: 140px; height: 140px }
+        }
+
+        @media(max-width:360px) {
+            .navbar { padding: 0 10px; gap: 2px }
+            .logo { gap: 5px }
+            .logo-bar-h { width: 16px; height: 5px }
+            .logo-bar-v { width: 5px; height: 16px }
+            .logo-dot { width: 5px; height: 5px }
+            .logo-text { font-size: 13px }
+            .btn-solid { padding: 5px 8px; font-size: 9px; gap: 3px }
+            .btn-solid svg { width: 9px; height: 9px }
+            .hero-h1 { font-size: 30px; letter-spacing: -1.5px }
+            .hero-h1 em { padding: 2px 8px }
+            .hero-p { font-size: 13px }
+            .btn-primary { padding: 9px 14px; font-size: 11px }
+            .btn-secondary-cta { padding: 9px 14px; font-size: 11px }
+            .hero-tag { font-size: 10px; padding: 5px 12px }
+        }
+
+        @media(max-width:330px) {
+            .navbar { padding: 0 8px; gap: 2px }
+            .logo { gap: 4px }
+            .logo-bar-h { width: 14px; height: 4px }
+            .logo-bar-v { width: 4px; height: 14px }
+            .logo-dot { width: 4px; height: 4px }
+            .logo-text { font-size: 12px }
+            .btn-solid { padding: 5px 7px; font-size: 9px; gap: 2px }
+            .btn-solid svg { width: 8px; height: 8px }
+            .hero-h1 { font-size: 26px; letter-spacing: -1px }
+            .hero-h1 em::after { width: 20px; left: 12px }
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar" id="navbar">
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <div class="logo-bar logo-bar-h"></div>
+                <div class="logo-bar logo-bar-v"></div>
+                <div class="logo-dot"></div>
+            </div>
+            <span class="logo-text">Pixel<span class="logo-light">Forge</span></span>
+        </a>
+        <div class="nav-right">
+            <a href="home.html" class="btn-solid"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Try Free</a>
+        </div>
+    </nav>
+
+    <div class="hero">
+        <div class="hero-bg">
+            <div class="h-circle hc1"></div>
+            <div class="h-circle hc2"></div>
+            <div class="h-circle hc3"></div>
+            <div class="h-diamond hd1"></div>
+            <div class="h-diamond hd2"></div>
+            <div class="h-sm hs1"></div>
+            <div class="h-sm hs2"></div>
+        </div>
+        <div class="hero-inner">
+            <div class="hero-tag"><div class="hero-tag-dot"></div>AI Image Generator</div>
+            <h1 class="hero-h1">Imagine It.<br>Create It<em>Now.</em></h1>
+            <p class="hero-p">Turn your words into stunning visuals. Describe anything and watch AI bring it to life in seconds.</p>
+            <div class="hero-cta">
+                <a href="home.html" class="btn-primary">Start Creating <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                <a href="examples.html" class="btn-secondary-cta">See Examples</a>
+            </div>
+            <div class="hero-free-badge"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>100% Free • No Login Required • Unlimited</div>
+        </div>
+    </div>
+
+    <script>
+        var bgEls = document.querySelectorAll('.h-circle,.h-diamond,.h-sm');
+        var factors = [25, 18, 12, 15, 10, 8, 6];
+        document.addEventListener('mousemove', function (e) {
+            var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
+            var dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
+            for (var i = 0; i < bgEls.length; i++) {
+                var f = factors[i] || 8, sx = i % 2 === 0 ? 1 : -1, sy = i % 3 === 0 ? 1 : -1;
+                bgEls[i].style.transform = 'translate(' + (dx * f * sx) + 'px,' + (dy * f * sy) + 'px)';
+            }
+        });
+        var navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', function () { navbar.classList.toggle('scrolled', window.scrollY > 40); });
+    </script>
+
+</body>
+
+</html>

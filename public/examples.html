@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PixelForge AI — Examples</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+        html{overflow-y:scroll;scrollbar-width:none}
+        html::-webkit-scrollbar{display:none}
+        body{background:#FFF9F5;color:#1A1A1A;overflow-y:scroll;scrollbar-width:none}
+        body::-webkit-scrollbar{display:none}
+
+        .navbar{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;background:#FFFFFF;border-bottom:1px solid #EDE6DE;display:flex;align-items:center;justify-content:space-between;padding:0 32px;transition:all .3s}
+        .navbar.scrolled{height:56px;box-shadow:0 2px 12px #EDE6DE}
+        .logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;min-width:0}
+        .logo-mark{display:flex;align-items:center;gap:2px;flex-shrink:0}
+        .logo-bar{background:#1A1A1A;border-radius:1.5px}
+        .logo-bar-h{width:24px;height:7px}
+        .logo-bar-v{width:7px;height:24px}
+        .logo-dot{width:9px;height:9px;background:#F0A080;border-radius:2px}
+        .logo-text{font-size:19px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;white-space:nowrap}
+        .logo-light{font-weight:300;color:#A0A0A0}
+        .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .btn-solid{background:#1A1A1A;color:#FFFFFF;border:1.5px solid #1A1A1A;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.2px;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+        .btn-solid:hover{background:#333333}
+        .btn-solid svg{width:11px;height:11px;stroke:#FFFFFF;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+        .btn-back{background:none;color:#5C5C5C;border:1.5px solid #EDE6DE;padding:7px 14px;border-radius:8px;font-size:11px;font-weight:600;cursor:pointer;transition:all .15s;white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+        .btn-back:hover{border-color:#1A1A1A;color:#1A1A1A}
+        .btn-back svg{width:11px;height:11px;stroke:currentColor;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+        .examples{padding:100px 24px 60px;max-width:1100px;margin:0 auto}
+        .ex-header{text-align:center;margin-bottom:48px}
+        .ex-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1.5px;color:#F0A080;margin-bottom:8px}
+        .ex-title{font-size:40px;font-weight:900;color:#1A1A1A;letter-spacing:-2px;line-height:1.1;margin-bottom:12px}
+        .ex-title em{font-style:normal;background:#F0A080;color:#FFFFFF;padding:0 12px;border-radius:6px}
+        .ex-desc{color:#8D8D8D;font-size:15px;max-width:440px;margin:0 auto;line-height:1.6}
+
+        .ex-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+        .ex-card{background:#FFFFFF;border:1px solid #EDE6DE;border-radius:16px;overflow:hidden;transition:all .2s;cursor:pointer}
+        .ex-card:hover{border-color:#D5C8BA;transform:translateY(-4px);box-shadow:0 12px 32px #EDE6DE}
+        .ex-card-img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;background:#F5F0EB;transition:transform .3s}
+        .ex-card:hover .ex-card-img{transform:scale(1.03)}
+        .ex-card-body{padding:14px 16px}
+        .ex-card-prompt{font-size:12px;font-weight:700;color:#1A1A1A;line-height:1.4;margin-bottom:6px;letter-spacing:-.2px}
+        .ex-card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+        .ex-card-tag{font-size:9px;font-weight:700;color:#8B5E3C;background:#FDEBD0;padding:3px 8px;border-radius:12px;letter-spacing:.3px;text-transform:uppercase}
+        .ex-card-size{font-size:9px;color:#8D8D8D;font-weight:500}
+        .ex-card-time{font-size:9px;color:#F0A080;font-weight:600;margin-left:auto}
+
+        .ex-cta{text-align:center;margin-top:48px}
+        .btn-primary{background:#1A1A1A;color:#FFFFFF;border:none;padding:14px 36px;border-radius:12px;font-size:14px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;text-decoration:none}
+        .btn-primary:hover{background:#333333;transform:translateY(-2px);box-shadow:0 8px 0 #EDE6DE}
+        .btn-primary svg{width:15px;height:15px;stroke:#FFFFFF;fill:none;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+
+        .img-overlay{position:fixed;inset:0;background:rgba(0,0,0,.85);backdrop-filter:blur(12px);z-index:300;display:none;align-items:center;justify-content:center;padding:20px;cursor:pointer}
+        .img-overlay.active{display:flex}
+        .img-overlay img{max-width:90vw;max-height:90vh;border-radius:12px;cursor:default}
+        .img-overlay-close{position:fixed;top:16px;right:16px;width:36px;height:36px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;z-index:301;transition:all .15s}
+        .img-overlay-close:hover{background:rgba(255,255,255,.3)}
+        .img-overlay-close svg{width:16px;height:16px;stroke:#FFFFFF;stroke-width:2.5;fill:none}
+
+        @media(max-width:768px){
+            .navbar{padding:0 16px}
+            .logo-bar-h{width:20px;height:6px}
+            .logo-bar-v{width:6px;height:20px}
+            .logo-dot{width:7px;height:7px}
+            .logo-text{font-size:16px}
+            .ex-title{font-size:32px}
+            .ex-grid{grid-template-columns:repeat(2,1fr);gap:12px}
+            .btn-back{padding:7px 12px;font-size:11px}
+            .btn-solid{padding:7px 12px;font-size:11px}
+        }
+        @media(max-width:500px){
+            .navbar{padding:0 12px;gap:4px}
+            .logo-bar-h{width:18px;height:5px}
+            .logo-bar-v{width:5px;height:18px}
+            .logo-dot{width:6px;height:6px}
+            .logo-text{font-size:14px}
+            .ex-title{font-size:26px;letter-spacing:-1px}
+            .ex-grid{grid-template-columns:1fr;gap:12px}
+            .ex-card-body{padding:12px 14px}
+            .btn-back{padding:6px 10px;font-size:10px}
+            .btn-back svg{width:10px;height:10px}
+            .btn-solid{padding:6px 10px;font-size:10px}
+            .btn-solid svg{width:10px;height:10px}
+            .btn-primary{padding:12px 24px;font-size:13px}
+        }
+        @media(max-width:360px){
+            .navbar{padding:0 10px;gap:2px}
+            .logo{gap:5px}
+            .logo-bar-h{width:16px;height:5px}
+            .logo-bar-v{width:5px;height:16px}
+            .logo-dot{width:5px;height:5px}
+            .logo-text{font-size:13px}
+            .ex-title{font-size:22px}
+            .btn-back{padding:5px 8px;font-size:9px;gap:3px}
+            .btn-back svg{width:9px;height:9px}
+            .btn-solid{padding:5px 8px;font-size:9px;gap:3px}
+            .btn-solid svg{width:9px;height:9px}
+        }
+        @media(max-width:330px){
+            .navbar{padding:0 8px;gap:2px}
+            .logo{gap:4px}
+            .logo-bar-h{width:14px;height:4px}
+            .logo-bar-v{width:4px;height:14px}
+            .logo-dot{width:4px;height:4px}
+            .logo-text{font-size:12px}
+            .btn-back{padding:5px 7px;font-size:9px;gap:2px}
+            .btn-back svg{width:8px;height:8px}
+            .btn-solid{padding:5px 7px;font-size:9px;gap:2px}
+            .btn-solid svg{width:8px;height:8px}
+            .ex-title{font-size:20px;letter-spacing:-0.5px}
+        }
+    </style>
+</head>
+<body>
+
+    <div class="img-overlay" id="imgOverlay">
+        <button class="img-overlay-close" id="imgOverlayClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+        <img id="imgOverlayImg" src="" alt="Full Image">
+    </div>
+
+    <nav class="navbar" id="navbar">
+        <a href="index.html" class="btn-back"><svg viewBox="0 0 24 24"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>Back</a>
+        <a href="#" class="logo">
+            <div class="logo-mark">
+                <div class="logo-bar logo-bar-h"></div>
+                <div class="logo-bar logo-bar-v"></div>
+                <div class="logo-dot"></div>
+            </div>
+            <span class="logo-text">Pixel<span class="logo-light">Forge</span></span>
+        </a>
+        <a href="home.html" class="btn-solid"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Try Free</a>
+    </nav>
+
+    <div class="examples">
+        <div class="ex-header">
+            <div class="ex-label">Gallery</div>
+            <div class="ex-title">See What AI Can <em>Create</em></div>
+            <div class="ex-desc">Real examples generated by PixelForge AI — click any image to expand</div>
+        </div>
+
+        <div class="ex-grid">
+            <!-- 1: Mountain Sunset -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=600&h=600&fit=crop&q=80" alt="Mountain Sunset">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Sunset over mountains with golden light</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Realistic</span><span class="ex-card-size">768×768</span><span class="ex-card-time">4.2s</span></div>
+                </div>
+            </div>
+
+            <!-- 2: Cyberpunk City -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1563089145-599997674d42?w=600&h=600&fit=crop&q=80" alt="Cyberpunk City">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Cyberpunk city with neon lights in rain</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Anime</span><span class="ex-card-size">768×768</span><span class="ex-card-time">5.1s</span></div>
+                </div>
+            </div>
+
+            <!-- 3: Floating Island -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=600&h=600&fit=crop&q=80" alt="Floating Island">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Floating island with waterfall, fantasy</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">3D Render</span><span class="ex-card-size">768×768</span><span class="ex-card-time">6.3s</span></div>
+                </div>
+            </div>
+
+            <!-- 4: Starry Night -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1519681393784-d120267933ba?w=600&h=600&fit=crop&q=80" alt="Starry Night">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Starry night over river, Monet style</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Oil Paint</span><span class="ex-card-size">768×768</span><span class="ex-card-time">4.8s</span></div>
+                </div>
+            </div>
+
+            <!-- 5: Cute Robot -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1485827404703-89b55fcc595e?w=600&h=600&fit=crop&q=80" alt="Cute Robot">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Cute robot waving hello, Pixar style</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Cartoon</span><span class="ex-card-size">768×768</span><span class="ex-card-time">3.9s</span></div>
+                </div>
+            </div>
+
+            
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1564760055775-d63b17a55c44?w=600&h=600&fit=crop&q=80" alt="Wolf Portrait">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Elephant walking in green savanna</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Realistic</span><span class="ex-card-size">768×768</span><span class="ex-card-time">5.5s</span></div>
+                </div>
+            </div>
+
+            <!-- 7: Cherry Blossoms -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1522383225653-ed111181a951?w=600&h=600&fit=crop&q=80" alt="Magical Girl">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Cherry blossoms garden</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Anime</span><span class="ex-card-size">768×1365</span><span class="ex-card-time">7.1s</span></div>
+                </div>
+            </div>
+
+            <!-- 8: Sports Car -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1544636331-e26879cd4d9b?w=600&h=600&fit=crop&q=80" alt="Futuristic Car">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Futuristic sports car with neon</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">3D Render</span><span class="ex-card-size">1365×768</span><span class="ex-card-time">6.8s</span></div>
+                </div>
+            </div>
+
+            <!-- 9: Coral Reef -->
+            <div class="ex-card">
+                <img class="ex-card-img" src="https://images.unsplash.com/photo-1546026423-cc4642628d2b?w=600&h=600&fit=crop&q=80" alt="Coral Reef">
+                <div class="ex-card-body">
+                    <div class="ex-card-prompt">Underwater coral reef with colorful fish</div>
+                    <div class="ex-card-meta"><span class="ex-card-tag">Oil Paint</span><span class="ex-card-size">768×768</span><span class="ex-card-time">5.3s</span></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="ex-cta">
+            <a href="home.html" class="btn-primary">Start Creating <svg viewBox="0 0 24 24"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+        </div>
+    </div>
+
+    <script>
+        var navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', function(){ navbar.classList.toggle('scrolled', window.scrollY > 40); });
+
+        var overlay = document.getElementById('imgOverlay');
+        var overlayImg = document.getElementById('imgOverlayImg');
+        var overlayClose = document.getElementById('imgOverlayClose');
+
+        document.querySelectorAll('.ex-card').forEach(function(card){
+            card.onclick = function(){
+                var img = card.querySelector('.ex-card-img');
+                if(img && img.src){
+                    overlayImg.src = img.src;
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden';
+                }
+            };
+        });
+
+        overlayClose.onclick = function(e){
+            e.stopPropagation();
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        };
+
+        overlay.onclick = function(e){
+            if(e.target === overlay){
+                overlay.classList.remove('active');
+                document.body.style.overflow = '';
+            }
+        };
+    </script>
+
+</body>
+</html>
