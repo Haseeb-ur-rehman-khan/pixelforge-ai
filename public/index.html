@@ -1,521 +1,156 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>PixelForge AI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-        rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Inter', sans-serif
-        }
+        *{margin:0;padding:0;box-sizing:border-box;font-family:'Inter',sans-serif}
+        html{overflow-y:scroll;scrollbar-width:none}
+        html::-webkit-scrollbar{display:none}
+        body{background:#FFF9F5;color:#1A1A1A;overflow-y:scroll;scrollbar-width:none}
+        body::-webkit-scrollbar{display:none}
 
-        html {
-            overflow-y: scroll;
-            scrollbar-width: none
-        }
+        .navbar{position:fixed;top:0;left:0;right:0;z-index:100;height:64px;background:#FFFFFF;border-bottom:1px solid #EDE6DE;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+        .logo{display:flex;align-items:center;gap:9px;text-decoration:none;flex-shrink:0;min-width:0}
+        .logo-mark{display:flex;align-items:center;gap:2px;flex-shrink:0}
+        .logo-bar{background:#1A1A1A;border-radius:1.5px}
+        .logo-bar-h{width:24px;height:7px}
+        .logo-bar-v{width:7px;height:24px}
+        .logo-dot{width:9px;height:9px;background:#F0A080;border-radius:2px}
+        .logo-text{font-size:19px;font-weight:800;color:#1A1A1A;letter-spacing:-0.3px;white-space:nowrap}
+        .logo-light{font-weight:300;color:#A0A0A0}
+        .nav-right{display:flex;align-items:center;gap:8px;flex-shrink:0}
+        .btn-outline{background:#FFFFFF;color:#1A1A1A;border:1.5px solid #D5D5D5;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.2px;white-space:nowrap}
+        .btn-outline:hover{border-color:#1A1A1A}
+        .btn-solid{background:#1A1A1A;color:#FFFFFF;border:1.5px solid #1A1A1A;padding:8px 22px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer;transition:all .15s;letter-spacing:.2px;white-space:nowrap}
+        .btn-solid:hover{background:#333333}
 
-        html::-webkit-scrollbar {
-            display: none
-        }
+        .hero{padding:120px 24px 80px;text-align:center;position:relative;overflow:hidden;min-height:100vh;display:flex;align-items:center;justify-content:center}
+        .hero-bg{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+        .h-circle{position:absolute;border-radius:50%;will-change:transform}
+        .hc1{width:400px;height:400px;background:#FDEBD0;top:-120px;right:-80px;animation:drift1 8s ease-in-out infinite}
+        .hc2{width:250px;height:250px;background:#F5CBA7;bottom:20px;left:-60px;animation:drift2 10s ease-in-out infinite}
+        .hc3{width:100px;height:100px;background:#F0A080;top:50%;left:10%;animation:drift3 6s ease-in-out infinite}
+        .h-diamond{position:absolute;will-change:transform}
+        .hd1{width:20px;height:20px;background:#F0A080;top:18%;right:22%;animation:floatSpin1 5s ease-in-out infinite}
+        .hd2{width:14px;height:14px;background:#F5CBA7;bottom:28%;left:18%;animation:floatSpin2 7s ease-in-out infinite}
+        .h-sm{position:absolute;border-radius:50%;will-change:transform}
+        .hs1{width:12px;height:12px;background:#FDEBD0;top:30%;left:25%;animation:floatUp1 4s ease-in-out infinite}
+        .hs2{width:8px;height:8px;background:#F0A080;bottom:35%;right:15%;animation:floatUp2 6s ease-in-out infinite}
 
-        body {
-            background: #FFF9F5;
-            color: #1A1A1A;
-            overflow-y: scroll;
-            scrollbar-width: none
-        }
+        @keyframes drift1{0%,100%{transform:translate(0,0)}25%{transform:translate(-20px,15px)}50%{transform:translate(10px,25px)}75%{transform:translate(-10px,10px)}}
+        @keyframes drift2{0%,100%{transform:translate(0,0)}25%{transform:translate(15px,-20px)}50%{transform:translate(-10px,-15px)}75%{transform:translate(20px,-10px)}}
+        @keyframes drift3{0%,100%{transform:translate(0,0)}25%{transform:translate(10px,15px)}50%{transform:translate(-15px,10px)}75%{transform:translate(15px,-20px)}}
+        @keyframes floatSpin1{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(8px,-12px) rotate(180deg)}}
+        @keyframes floatSpin2{0%,100%{transform:translate(0,0) rotate(0deg)}50%{transform:translate(-10px,8px) rotate(-180deg)}}
+        @keyframes floatUp1{0%,100%{transform:translate(0,0)}50%{transform:translate(5px,-10px)}}
+        @keyframes floatUp2{0%,100%{transform:translate(0,0)}50%{transform:translate(-6px,8px)}}
 
-        body::-webkit-scrollbar {
-            display: none
-        }
+        .hero-inner{position:relative;z-index:1;max-width:700px;margin:0 auto}
+        .hero-tag{display:inline-flex;align-items:center;gap:6px;background:#FDEBD0;color:#8B5E3C;padding:6px 16px;border-radius:24px;font-size:11px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;margin-bottom:28px}
+        .hero-tag-dot{width:6px;height:6px;background:#F0A080;border-radius:50%}
+        .hero-h1{font-size:72px;font-weight:900;color:#1A1A1A;letter-spacing:-3px;line-height:1;margin-bottom:20px}
+        .hero-h1 em{font-style:normal;display:inline-block;background:#F0A080;color:#FFFFFF;padding:2px 16px;border-radius:10px;line-height:1.2;position:relative}
+        .hero-h1 em::after{content:'';position:absolute;bottom:-4px;left:20px;width:30px;height:4px;background:#F0A080;border-radius:2px}
+        .hero-p{color:#8D8D8D;font-size:17px;line-height:1.7;max-width:480px;margin:0 auto 36px}
+        .hero-cta{display:flex;align-items:center;justify-content:center;gap:10px;margin-bottom:16px;flex-wrap:nowrap}
+        .btn-primary{background:#1A1A1A;color:#FFFFFF;border:none;padding:16px 40px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;letter-spacing:-.2px;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+        .btn-primary:hover{background:#333333;transform:translateY(-2px);box-shadow:0 8px 0 #EDE6DE}
+        .btn-primary:active{transform:translateY(0);box-shadow:0 2px 0 #EDE6DE}
+        .btn-primary svg{width:16px;height:16px;transition:transform .2s}
+        .btn-primary:hover svg{transform:translateX(3px)}
+        .btn-secondary-cta{background:#FFFFFF;color:#1A1A1A;border:1.5px solid #D5D5D5;padding:16px 32px;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;display:inline-flex;align-items:center;gap:8px;white-space:nowrap}
+        .btn-secondary-cta:hover{border-color:#1A1A1A;transform:translateY(-2px)}
+        .hero-note{font-size:12px;color:#B8AFA6;font-weight:500;letter-spacing:.3px}
 
-        .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 100;
-            height: 64px;
-            background: #FFFFFF;
-            border-bottom: 1px solid #EDE6DE;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0 32px;
-            transition: all .3s
-        }
+        /* ===== MODALS ===== */
+        .modal-overlay{position:fixed;inset:0;background:#1A1A1A;z-index:200;display:none;align-items:center;justify-content:center;padding:20px}
+        .modal-overlay.active{display:flex}
+        .modal{background:#FFF9F5;border:1px solid #EDE6DE;border-radius:16px;padding:24px 20px;width:100%;max-width:320px;position:relative;animation:modalIn .25s ease}
+        @keyframes modalIn{0%{opacity:0;transform:translateY(12px) scale(.98)}100%{opacity:1;transform:translateY(0) scale(1)}}
+        .modal-close{position:absolute;top:10px;right:10px;width:26px;height:26px;border-radius:6px;border:none;background:#F5F0EB;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s}
+        .modal-close:hover{background:#EDE6DE}
+        .modal-close svg{width:12px;height:12px;stroke:#1A1A1A;stroke-width:2.5;fill:none}
+        .modal-title{font-size:18px;font-weight:900;color:#1A1A1A;letter-spacing:-0.6px;margin-bottom:4px}
+        .modal-subtitle{font-size:11px;color:#8D8D8D;margin-bottom:16px;line-height:1.5}
+        .modal-field{margin-bottom:10px}
+        .modal-label{display:block;font-size:10px;font-weight:700;color:#5C5C5C;margin-bottom:4px;letter-spacing:.2px}
+        .modal-input{width:100%;padding:9px 10px;border:1.5px solid #EDE6DE;border-radius:8px;font-size:13px;font-family:'Inter',sans-serif;color:#1A1A1A;background:#FFFFFF;outline:none;transition:border-color .15s}
+        .modal-input:focus{border-color:#F0A080}
+        .modal-input::placeholder{color:#C0C0C0}
+        .modal-input.err{border-color:#E06060}
+        .modal-err{font-size:10px;color:#E06060;margin-top:3px;display:none}
+        .modal-hint{font-size:10px;color:#C0C0C0;margin-top:3px}
+        .modal-forgot-link{display:block;text-align:right;font-size:10px;font-weight:600;color:#F0A080;text-decoration:none;margin-top:5px;cursor:pointer;transition:color .15s}
+        .modal-forgot-link:hover{color:#D4896A}
+        .modal-submit{width:100%;padding:10px;background:#1A1A1A;color:#FFFFFF;border:1.5px solid #1A1A1A;border-radius:8px;font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;letter-spacing:-.1px;margin-top:2px}
+        .modal-submit:hover{background:#333333}
+        .modal-divider{display:flex;align-items:center;gap:8px;margin:12px 0}
+        .modal-divider span{font-size:10px;color:#C0C0C0;font-weight:500;white-space:nowrap}
+        .modal-divider::before,.modal-divider::after{content:'';flex:1;height:1px;background:#EDE6DE}
+        .modal-switch{text-align:center;font-size:11px;color:#8D8D8D}
+        .modal-switch a{color:#F0A080;font-weight:700;text-decoration:none;cursor:pointer;transition:color .15s}
+        .modal-switch a:hover{color:#D4896A}
+        .modal-msg{font-size:11px;color:#8D8D8D;text-align:center;margin-top:8px;line-height:1.5}
+        .modal-msg b{color:#1A1A1A;font-weight:700}
 
-        .navbar.scrolled {
-            height: 56px;
-            box-shadow: 0 2px 12px #EDE6DE
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 9px;
-            text-decoration: none;
-            flex-shrink: 0;
-            min-width: 0
-        }
-
-        .logo-mark {
-            display: flex;
-            align-items:center;
-            gap: 2px;
-            flex-shrink: 0
-        }
-
-        .logo-bar {
-            background: #1A1A1A;
-            border-radius: 1.5px
-        }
-
-        .logo-bar-h {
-            width: 24px;
-            height: 7px
-        }
-
-        .logo-bar-v {
-            width: 7px;
-            height: 24px
-        }
-
-        .logo-dot {
-            width: 9px;
-            height: 9px;
-            background: #F0A080;
-            border-radius: 2px
-        }
-
-        .logo-text {
-            font-size: 19px;
-            font-weight: 800;
-            color: #1A1A1A;
-            letter-spacing: -0.3px;
-            white-space: nowrap
-        }
-
-        .logo-light {
-            font-weight: 300;
-            color: #A0A0A0
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0
-        }
-
-        .btn-solid {
-            background: #1A1A1A;
-            color: #FFFFFF;
-            border: 1.5px solid #1A1A1A;
-            padding: 7px 14px;
-            border-radius: 8px;
-            font-size: 11px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all .15s;
-            letter-spacing: .2px;
-            white-space: nowrap;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 4px
-        }
-
-        .btn-solid:hover {
-            background: #333333
-        }
-
-        .btn-solid svg {
-            width: 11px;
-            height: 11px;
-            stroke: #FFFFFF;
-            fill: none;
-            stroke-width: 2.5;
-            stroke-linecap: round;
-            stroke-linejoin: round
-        }
-
-        .hero {
-            padding: 120px 24px 80px;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-            min-height: 100vh;
-            display: flex;
-            align-items: center;
-            justify-content: center
-        }
-
-        .hero-bg {
-            position: absolute;
-            inset: 0;
-            pointer-events: none;
-            overflow: hidden
-        }
-
-        .h-circle {
-            position: absolute;
-            border-radius: 50%;
-            will-change: transform
-        }
-
-        .hc1 {
-            width: 400px;
-            height: 400px;
-            background: #FDEBD0;
-            top: -120px;
-            right: -80px;
-            animation: drift1 8s ease-in-out infinite
-        }
-
-        .hc2 {
-            width: 250px;
-            height: 250px;
-            background: #F5CBA7;
-            bottom: 20px;
-            left: -60px;
-            animation: drift2 10s ease-in-out infinite
-        }
-
-        .hc3 {
-            width: 100px;
-            height: 100px;
-            background: #F0A080;
-            top: 50%;
-            left: 10%;
-            animation: drift3 6s ease-in-out infinite
-        }
-
-        .h-diamond {
-            position: absolute;
-            will-change: transform
-        }
-
-        .hd1 {
-            width: 20px;
-            height: 20px;
-            background: #F0A080;
-            top: 18%;
-            right: 22%;
-            animation: floatSpin1 5s ease-in-out infinite
-        }
-
-        .hd2 {
-            width: 14px;
-            height: 14px;
-            background: #F5CBA7;
-            bottom: 28%;
-            left: 18%;
-            animation: floatSpin2 7s ease-in-out infinite
-        }
-
-        .h-sm {
-            position: absolute;
-            border-radius: 50%;
-            will-change: transform
-        }
-
-        .hs1 {
-            width: 12px;
-            height: 12px;
-            background: #FDEBD0;
-            top: 30%;
-            left: 25%;
-            animation: floatUp1 4s ease-in-out infinite
-        }
-
-        .hs2 {
-            width: 8px;
-            height: 8px;
-            background: #F0A080;
-            bottom: 35%;
-            right: 15%;
-            animation: floatUp2 6s ease-in-out infinite
-        }
-
-        @keyframes drift1 {
-            0%, 100% { transform: translate(0, 0) }
-            25% { transform: translate(-20px, 15px) }
-            50% { transform: translate(10px, 25px) }
-            75% { transform: translate(-10px, 10px) }
-        }
-
-        @keyframes drift2 {
-            0%, 100% { transform: translate(0, 0) }
-            25% { transform: translate(15px, -20px) }
-            50% { transform: translate(-10px, -15px) }
-            75% { transform: translate(20px, -10px) }
-        }
-
-        @keyframes drift3 {
-            0%, 100% { transform: translate(0, 0) }
-            25% { transform: translate(10px, 15px) }
-            50% { transform: translate(-15px, 10px) }
-            75% { transform: translate(15px, -20px) }
-        }
-
-        @keyframes floatSpin1 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) }
-            50% { transform: translate(8px, -12px) rotate(180deg) }
-        }
-
-        @keyframes floatSpin2 {
-            0%, 100% { transform: translate(0, 0) rotate(0deg) }
-            50% { transform: translate(-10px, 8px) rotate(-180deg) }
-        }
-
-        @keyframes floatUp1 {
-            0%, 100% { transform: translate(0, 0) }
-            50% { transform: translate(5px, -10px) }
-        }
-
-        @keyframes floatUp2 {
-            0%, 100% { transform: translate(0, 0) }
-            50% { transform: translate(-6px, 8px) }
-        }
-
-        .hero-inner {
-            position: relative;
-            z-index: 1;
-            max-width: 700px;
-            margin: 0 auto
-        }
-
-        .hero-tag {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            background: #FDEBD0;
-            color: #8B5E3C;
-            padding: 6px 16px;
-            border-radius: 24px;
-            font-size: 11px;
-            font-weight: 700;
-            letter-spacing: .5px;
-            text-transform: uppercase;
-            margin-bottom: 28px
-        }
-
-        .hero-tag-dot {
-            width: 6px;
-            height: 6px;
-            background: #F0A080;
-            border-radius: 50%
-        }
-
-        .hero-h1 {
-            font-size: 72px;
-            font-weight: 900;
-            color: #1A1A1A;
-            letter-spacing: -3px;
-            line-height: 1;
-            margin-bottom: 20px
-        }
-
-        .hero-h1 em {
-            font-style: normal;
-            display: inline-block;
-            background: #F0A080;
-            color: #FFFFFF;
-            padding: 2px 16px;
-            border-radius: 10px;
-            line-height: 1.2;
-            position: relative
-        }
-
-        .hero-h1 em::after {
-            content: '';
-            position: absolute;
-            bottom: -4px;
-            left: 20px;
-            width: 30px;
-            height: 4px;
-            background: #F0A080;
-            border-radius: 2px
-        }
-
-        .hero-p {
-            color: #8D8D8D;
-            font-size: 17px;
-            line-height: 1.7;
-            max-width: 480px;
-            margin: 0 auto 36px
-        }
-
-        .hero-cta {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            margin-bottom: 16px;
-            flex-wrap: nowrap
-        }
-
-        .btn-primary {
-            background: #1A1A1A;
-            color: #FFFFFF;
-            border: none;
-            padding: 16px 40px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all .2s;
-            letter-spacing: -.2px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            text-decoration: none
-        }
-
-        .btn-primary:hover {
-            background: #333333;
-            transform: translateY(-2px);
-            box-shadow: 0 8px 0 #EDE6DE
-        }
-
-        .btn-primary:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 0 #EDE6DE
-        }
-
-        .btn-primary svg {
-            width: 16px;
-            height: 16px;
-            transition: transform .2s
-        }
-
-        .btn-primary:hover svg {
-            transform: translateX(3px)
-        }
-
-        .btn-secondary-cta {
-            background: #FFFFFF;
-            color: #1A1A1A;
-            border: 1.5px solid #D5D5D5;
-            padding: 16px 32px;
-            border-radius: 12px;
-            font-size: 15px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all .2s;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            white-space: nowrap;
-            text-decoration: none
-        }
-
-        .btn-secondary-cta:hover {
-            border-color: #1A1A1A;
-            transform: translateY(-2px)
-        }
-
-        .hero-free-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            margin-top: 6px;
-            padding: 6px 16px;
-            background: #E8F5E9;
-            border: 1px solid #C8E6C9;
-            border-radius: 20px;
-            font-size: 10px;
-            font-weight: 700;
-            color: #2E7D32;
-            letter-spacing: .3px
-        }
-
-        .hero-free-badge svg {
-            width: 12px;
-            height: 12px;
-            stroke: #2E7D32;
-            fill: none;
-            stroke-width: 2.5
-        }
+        /* OTP */
+        .otp-boxes{display:flex;gap:6px;justify-content:center;margin-bottom:10px}
+        .otp-box{width:42px;height:46px;border:1.5px solid #EDE6DE;border-radius:10px;text-align:center;font-size:18px;font-weight:800;color:#1A1A1A;background:#FFFFFF;outline:none;font-family:'Inter',sans-serif;transition:border-color .15s}
+        .otp-box:focus{border-color:#F0A080}
+        .otp-hint{font-size:10px;color:#8D8D8D;margin-bottom:12px;text-align:center}
+        .otp-hint b{color:#1A1A1A;font-weight:700}
+        .otp-resend{font-size:10px;color:#F0A080;font-weight:600;cursor:pointer;text-align:center;margin-bottom:3px}
+        .otp-resend:hover{color:#D4896A}
+        .otp-timer{font-size:9px;color:#C0C0C0;text-align:center;margin-bottom:3px}
 
         /* ===== RESPONSIVE ===== */
-        @media(max-width:768px) {
-            .navbar { padding: 0 16px; gap: 8px }
-            .logo { gap: 6px }
-            .logo-bar-h { width: 20px; height: 6px }
-            .logo-bar-v { width: 6px; height: 20px }
-            .logo-dot { width: 7px; height: 7px }
-            .logo-text { font-size: 16px }
-            .nav-right { gap: 6px }
-            .btn-solid { padding: 7px 12px; font-size: 11px }
-            .hero-h1 { font-size: 44px; letter-spacing: -2px }
-            .hero-h1 em { padding: 2px 10px }
-            .hero-p { font-size: 15px }
-            .btn-primary { padding: 12px 24px; font-size: 13px; border-radius: 10px }
-            .btn-secondary-cta { padding: 12px 20px; font-size: 13px; border-radius: 10px }
-            .hero-cta { gap: 8px }
+        @media(max-width:768px){
+            .navbar{padding:0 16px;gap:8px}
+            .logo{gap:6px}
+            .logo-bar-h{width:20px;height:6px}
+            .logo-bar-v{width:6px;height:20px}
+            .logo-dot{width:7px;height:7px}
+            .logo-text{font-size:16px}
+            .nav-right{gap:6px}
+            .btn-outline{padding:7px 14px;font-size:11px}
+            .btn-solid{padding:7px 16px;font-size:11px}
+            .hero-h1{font-size:44px;letter-spacing:-2px}
+            .hero-h1 em{padding:2px 10px}
+            .hero-p{font-size:15px}
+            .btn-primary{padding:12px 24px;font-size:13px;border-radius:10px}
+            .btn-secondary-cta{padding:12px 20px;font-size:13px;border-radius:10px}
+            .hero-cta{gap:8px}
+            .modal{max-width:300px;padding:20px 18px}
         }
-
-        @media(max-width:500px) {
-            .navbar { padding: 0 12px; gap: 4px }
-            .logo-bar-h { width: 18px; height: 5px }
-            .logo-bar-v { width: 5px; height: 18px }
-            .logo-dot { width: 6px; height: 6px }
-            .logo-text { font-size: 14px }
-            .nav-right { gap: 5px }
-            .btn-solid { padding: 6px 10px; font-size: 10px }
-            .btn-solid svg { width: 10px; height: 10px }
-            .hero-h1 { font-size: 36px }
-            .btn-primary { padding: 10px 18px; font-size: 12px; border-radius: 9px; gap: 5px }
-            .btn-secondary-cta { padding: 10px 16px; font-size: 12px; border-radius: 9px }
-            .hero-cta { gap: 6px; flex-wrap: wrap; justify-content: center }
-            .hc1 { width: 200px; height: 200px }
-            .hc2 { width: 140px; height: 140px }
-        }
-
-        @media(max-width:360px) {
-            .navbar { padding: 0 10px; gap: 2px }
-            .logo { gap: 5px }
-            .logo-bar-h { width: 16px; height: 5px }
-            .logo-bar-v { width: 5px; height: 16px }
-            .logo-dot { width: 5px; height: 5px }
-            .logo-text { font-size: 13px }
-            .btn-solid { padding: 5px 8px; font-size: 9px; gap: 3px }
-            .btn-solid svg { width: 9px; height: 9px }
-            .hero-h1 { font-size: 30px; letter-spacing: -1.5px }
-            .hero-h1 em { padding: 2px 8px }
-            .hero-p { font-size: 13px }
-            .btn-primary { padding: 9px 14px; font-size: 11px }
-            .btn-secondary-cta { padding: 9px 14px; font-size: 11px }
-            .hero-tag { font-size: 10px; padding: 5px 12px }
-        }
-
-        @media(max-width:330px) {
-            .navbar { padding: 0 8px; gap: 2px }
-            .logo { gap: 4px }
-            .logo-bar-h { width: 14px; height: 4px }
-            .logo-bar-v { width: 4px; height: 14px }
-            .logo-dot { width: 4px; height: 4px }
-            .logo-text { font-size: 12px }
-            .btn-solid { padding: 5px 7px; font-size: 9px; gap: 2px }
-            .btn-solid svg { width: 8px; height: 8px }
-            .hero-h1 { font-size: 26px; letter-spacing: -1px }
-            .hero-h1 em::after { width: 20px; left: 12px }
+        @media(max-width:500px){
+            .navbar{padding:0 12px;gap:4px}
+            .logo-bar-h{width:18px;height:5px}
+            .logo-bar-v{width:5px;height:18px}
+            .logo-dot{width:6px;height:6px}
+            .logo-text{font-size:14px}
+            .nav-right{gap:5px}
+            .btn-outline{padding:6px 12px;font-size:11px}
+            .btn-solid{padding:6px 12px;font-size:11px}
+            .hero-h1{font-size:36px}
+            .btn-primary{padding:10px 18px;font-size:12px;border-radius:9px;gap:5px}
+            .btn-secondary-cta{padding:10px 16px;font-size:12px;border-radius:9px}
+            .hero-cta{gap:6px}
+            .hc1{width:200px;height:200px}
+            .hc2{width:140px;height:140px}
+            .modal{max-width:280px;padding:18px 14px}
+            .modal-title{font-size:16px}
+            .modal-input{padding:8px 9px;font-size:12px}
+            .modal-submit{padding:9px;font-size:12px}
+            .otp-box{width:36px;height:40px;font-size:15px}
         }
     </style>
 </head>
-
 <body>
 
-    <nav class="navbar" id="navbar">
+    <nav class="navbar">
         <a href="#" class="logo">
             <div class="logo-mark">
                 <div class="logo-bar logo-bar-h"></div>
@@ -525,7 +160,8 @@
             <span class="logo-text">Pixel<span class="logo-light">Forge</span></span>
         </a>
         <div class="nav-right">
-            <a href="home.html" class="btn-solid"><svg viewBox="0 0 24 24"><path d="M12 5v14"/><path d="M5 12h14"/></svg>Try Free</a>
+            <button class="btn-outline" id="loginBtn">Log In</button>
+            <button class="btn-solid" id="signupBtn">Sign Up</button>
         </div>
     </nav>
 
@@ -544,28 +180,284 @@
             <h1 class="hero-h1">Imagine It.<br>Create It<em>Now.</em></h1>
             <p class="hero-p">Turn your words into stunning visuals. Describe anything and watch AI bring it to life in seconds.</p>
             <div class="hero-cta">
-                <a href="home.html" class="btn-primary">Start Creating <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
-                <a href="examples.html" class="btn-secondary-cta">See Examples</a>
+                <a href="home.html" class="btn-primary" style="text-decoration:none">Start Creating <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg></a>
+                <button class="btn-secondary-cta">See Examples</button>
             </div>
-            <div class="hero-free-badge"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>100% Free • No Login Required • Unlimited</div>
+            <p class="hero-note">Free to start • 15 credits included</p>
+        </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="modal-overlay" id="loginModal">
+        <div class="modal">
+            <button class="modal-close" id="loginClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <form id="loginForm" novalidate>
+                <div class="modal-title">Welcome Back</div>
+                <div class="modal-subtitle">Log in to continue creating</div>
+                <div class="modal-field">
+                    <label class="modal-label">Email</label>
+                    <input class="modal-input" id="loginEmail" type="email" placeholder="you@example.com" autocomplete="off" data-1p-ignore>
+                    <div class="modal-err" id="loginEmailErr">Please enter a valid email</div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Password</label>
+                    <input class="modal-input" id="loginPass" type="password" placeholder="Enter your password" autocomplete="new-password" data-1p-ignore>
+                    <div class="modal-err" id="loginPassErr">Please enter your password</div>
+                    <a class="modal-forgot-link" id="goForgot">Forgot Password?</a>
+                </div>
+                <button class="modal-submit" type="submit">Log In</button>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <div class="modal-switch">Don't have an account? <a id="switchToSignup">Sign Up</a></div>
+        </div>
+    </div>
+
+    <!-- SIGNUP -->
+    <div class="modal-overlay" id="signupModal">
+        <div class="modal">
+            <button class="modal-close" id="signupClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <form id="signupForm" novalidate>
+                <div class="modal-title">Create Account</div>
+                <div class="modal-subtitle">Start creating stunning images for free</div>
+                <div class="modal-field">
+                    <label class="modal-label">Full Name</label>
+                    <input class="modal-input" id="signupName" type="text" placeholder="Your name" autocomplete="off" data-1p-ignore>
+                    <div class="modal-err" id="signupNameErr">Please enter your name</div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Email</label>
+                    <input class="modal-input" id="signupEmail" type="email" placeholder="you@example.com" autocomplete="off" data-1p-ignore>
+                    <div class="modal-err" id="signupEmailErr">Please enter a valid email</div>
+                </div>
+                <div class="modal-field">
+                    <label class="modal-label">Password</label>
+                    <input class="modal-input" id="signupPass" type="password" placeholder="Create a password" autocomplete="new-password" data-1p-ignore>
+                    <div class="modal-hint">Create at least 6 digit password</div>
+                    <div class="modal-err" id="signupPassErr">Password must be at least 6 characters</div>
+                </div>
+                <button class="modal-submit" type="submit">Sign Up</button>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <div class="modal-switch">Already have an account? <a id="switchToLogin">Log In</a></div>
+        </div>
+    </div>
+
+    <!-- SIGNUP OTP -->
+    <div class="modal-overlay" id="signupOtpModal">
+        <div class="modal">
+            <button class="modal-close" id="signupOtpClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <form id="signupOtpForm" novalidate>
+                <div class="modal-title">Verify Email</div>
+                <div class="modal-subtitle">Enter the 4-digit code sent to your email</div>
+                <div class="otp-boxes">
+                    <input class="otp-box" type="text" maxlength="1" autocomplete="off" data-1p-ignore>
+                    <input class="otp-box" type="text" maxlength="1" autocomplete="off" data-1p-ignore>
+                    <input class="otp-box" type="text" maxlength="1" autocomplete="off" data-1p-ignore>
+                    <input class="otp-box" type="text" maxlength="1" autocomplete="off" data-1p-ignore>
+                </div>
+                <div class="modal-err" id="otpErr" style="text-align:center;margin-bottom:8px">Please enter the complete code</div>
+                <div class="otp-hint">Code sent to <b id="signupOtpEmail">you@example.com</b></div>
+                <div class="otp-timer" id="signupOtpTimer">Resend in 00:30</div>
+                <div class="otp-resend" id="signupOtpResend" style="display:none">Resend Code</div>
+                <button class="modal-submit" type="submit">Verify & Create Account</button>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <div class="modal-switch"><a id="backToSignupFromOtp">Back to Sign Up</a></div>
+        </div>
+    </div>
+
+    <!-- FORGOT PASSWORD -->
+    <div class="modal-overlay" id="forgotModal">
+        <div class="modal">
+            <button class="modal-close" id="forgotClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <form id="forgotForm" novalidate>
+                <div class="modal-title">Forgot Password</div>
+                <div class="modal-subtitle">We'll send a password reset link to your email</div>
+                <div class="modal-field">
+                    <label class="modal-label">Email</label>
+                    <input class="modal-input" id="forgotEmail" type="email" placeholder="you@example.com" autocomplete="off" data-1p-ignore>
+                    <div class="modal-err" id="forgotEmailErr">Please enter a valid email</div>
+                </div>
+                <button class="modal-submit" type="submit">Send Reset Link</button>
+            </form>
+            <div class="modal-divider"><span>or</span></div>
+            <div class="modal-switch"><a id="backToLoginFromForgot">Back to Login</a></div>
+        </div>
+    </div>
+
+    <!-- FORGOT SENT -->
+    <div class="modal-overlay" id="forgotSentModal">
+        <div class="modal">
+            <button class="modal-close" id="forgotSentClose"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+            <div class="modal-title">Check Your Email</div>
+            <div class="modal-subtitle">We've sent a password reset link to your email address</div>
+            <div class="modal-msg">Check your inbox at <b id="forgotSentEmail">you@example.com</b> and click the reset link to set a new password. Don't forget to check spam!</div>
+            <button class="modal-submit" id="backToLoginFromSent" style="margin-top:12px">Back to Login</button>
         </div>
     </div>
 
     <script>
-        var bgEls = document.querySelectorAll('.h-circle,.h-diamond,.h-sm');
+        // Parallax
+        var bgEls = document.querySelectorAll('.h-circle, .h-diamond, .h-sm');
         var factors = [25, 18, 12, 15, 10, 8, 6];
-        document.addEventListener('mousemove', function (e) {
-            var cx = window.innerWidth / 2, cy = window.innerHeight / 2;
-            var dx = (e.clientX - cx) / cx, dy = (e.clientY - cy) / cy;
+        document.addEventListener('mousemove', function(e) {
+            var cx = window.innerWidth / 2;
+            var cy = window.innerHeight / 2;
+            var dx = (e.clientX - cx) / cx;
+            var dy = (e.clientY - cy) / cy;
             for (var i = 0; i < bgEls.length; i++) {
-                var f = factors[i] || 8, sx = i % 2 === 0 ? 1 : -1, sy = i % 3 === 0 ? 1 : -1;
-                bgEls[i].style.transform = 'translate(' + (dx * f * sx) + 'px,' + (dy * f * sy) + 'px)';
+                var f = factors[i] || 8;
+                var signX = i % 2 === 0 ? 1 : -1;
+                var signY = i % 3 === 0 ? 1 : -1;
+                bgEls[i].style.transform = 'translate(' + (dx * f * signX) + 'px,' + (dy * f * signY) + 'px)';
             }
         });
-        var navbar = document.getElementById('navbar');
-        window.addEventListener('scroll', function () { navbar.classList.toggle('scrolled', window.scrollY > 40); });
+
+        // Modal helpers
+        function openM(id){ document.getElementById(id).classList.add('active'); }
+        function closeM(id){ document.getElementById(id).classList.remove('active'); }
+
+        // Show/hide error
+        function showErr(inputId, errId){
+            document.getElementById(inputId).classList.add('err');
+            document.getElementById(errId).style.display = 'block';
+        }
+        function hideErr(inputId, errId){
+            document.getElementById(inputId).classList.remove('err');
+            document.getElementById(errId).style.display = 'none';
+        }
+        function clearAllErr(modalId){
+            var m = document.getElementById(modalId);
+            m.querySelectorAll('.modal-input').forEach(function(inp){ inp.classList.remove('err'); });
+            m.querySelectorAll('.modal-err').forEach(function(err){ err.style.display = 'none'; });
+        }
+
+        // Email validation
+        function isEmail(v){ return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v); }
+
+        // Clear errors on input
+        document.querySelectorAll('.modal-input').forEach(function(inp){
+            inp.addEventListener('input', function(){
+                this.classList.remove('err');
+                var errEl = this.parentNode.querySelector('.modal-err');
+                if(errEl) errEl.style.display = 'none';
+            });
+        });
+
+        // Open
+        document.getElementById('loginBtn').onclick = function(){ clearAllErr('loginModal'); openM('loginModal'); };
+        document.getElementById('signupBtn').onclick = function(){ clearAllErr('signupModal'); openM('signupModal'); };
+
+        // Close
+        document.getElementById('loginClose').onclick = function(){ closeM('loginModal'); };
+        document.getElementById('signupClose').onclick = function(){ closeM('signupModal'); };
+        document.getElementById('signupOtpClose').onclick = function(){ closeM('signupOtpModal'); };
+        document.getElementById('forgotClose').onclick = function(){ closeM('forgotModal'); };
+        document.getElementById('forgotSentClose').onclick = function(){ closeM('forgotSentModal'); };
+
+        // Switches
+        document.getElementById('switchToSignup').onclick = function(){ closeM('loginModal'); clearAllErr('signupModal'); openM('signupModal'); };
+        document.getElementById('switchToLogin').onclick = function(){ closeM('signupModal'); clearAllErr('loginModal'); openM('loginModal'); };
+        document.getElementById('goForgot').onclick = function(e){ e.preventDefault(); closeM('loginModal'); clearAllErr('forgotModal'); openM('forgotModal'); };
+        document.getElementById('backToLoginFromForgot').onclick = function(){ closeM('forgotModal'); clearAllErr('loginModal'); openM('loginModal'); };
+        document.getElementById('backToSignupFromOtp').onclick = function(){ closeM('signupOtpModal'); openM('signupModal'); };
+        document.getElementById('backToLoginFromSent').onclick = function(){ closeM('forgotSentModal'); clearAllErr('loginModal'); openM('loginModal'); };
+
+        // LOGIN submit
+        document.getElementById('loginForm').onsubmit = function(e){
+            e.preventDefault();
+            var ok = true;
+            var email = document.getElementById('loginEmail').value.trim();
+            var pass = document.getElementById('loginPass').value;
+
+            if(!isEmail(email)){ showErr('loginEmail','loginEmailErr'); ok = false; }
+            else { hideErr('loginEmail','loginEmailErr'); }
+
+            if(!pass){ showErr('loginPass','loginPassErr'); ok = false; }
+            else { hideErr('loginPass','loginPassErr'); }
+
+            if(ok){ /* login success */ }
+        };
+
+        // SIGNUP submit
+        document.getElementById('signupForm').onsubmit = function(e){
+            e.preventDefault();
+            var ok = true;
+            var name = document.getElementById('signupName').value.trim();
+            var email = document.getElementById('signupEmail').value.trim();
+            var pass = document.getElementById('signupPass').value;
+
+            if(!name){ showErr('signupName','signupNameErr'); ok = false; }
+            else { hideErr('signupName','signupNameErr'); }
+
+            if(!isEmail(email)){ showErr('signupEmail','signupEmailErr'); ok = false; }
+            else { hideErr('signupEmail','signupEmailErr'); }
+
+            if(pass.length < 6){ showErr('signupPass','signupPassErr'); ok = false; }
+            else { hideErr('signupPass','signupPassErr'); }
+
+            if(ok){
+                document.getElementById('signupOtpEmail').textContent = email;
+                closeM('signupModal');
+                openM('signupOtpModal');
+                startTimer('signupOtpTimer','signupOtpResend');
+            }
+        };
+
+        // SIGNUP OTP submit
+        document.getElementById('signupOtpForm').onsubmit = function(e){
+            e.preventDefault();
+            var boxes = document.querySelectorAll('#signupOtpForm .otp-box');
+            var full = true;
+            boxes.forEach(function(b){ if(!b.value) full = false; });
+            if(!full){ document.getElementById('otpErr').style.display = 'block'; return; }
+            document.getElementById('otpErr').style.display = 'none';
+            /* otp verified */
+        };
+
+        // FORGOT submit
+        document.getElementById('forgotForm').onsubmit = function(e){
+            e.preventDefault();
+            var email = document.getElementById('forgotEmail').value.trim();
+            if(!isEmail(email)){ showErr('forgotEmail','forgotEmailErr'); return; }
+            hideErr('forgotEmail','forgotEmailErr');
+            document.getElementById('forgotSentEmail').textContent = email;
+            closeM('forgotModal');
+            openM('forgotSentModal');
+        };
+
+        // OTP auto-focus
+        document.querySelectorAll('.otp-box').forEach(function(box, idx, all){
+            box.addEventListener('input', function(){
+                this.value = this.value.replace(/[^0-9]/g,'');
+                if(this.value && idx < all.length - 1) all[idx + 1].focus();
+            });
+            box.addEventListener('keydown', function(e){
+                if(e.key === 'Backspace' && !this.value && idx > 0) all[idx - 1].focus();
+            });
+        });
+
+        // OTP Timer
+        function startTimer(timerId, resendId){
+            var timerEl = document.getElementById(timerId);
+            var resendEl = document.getElementById(resendId);
+            var sec = 30;
+            timerEl.style.display = 'block';
+            resendEl.style.display = 'none';
+            timerEl.textContent = 'Resend in 00:30';
+            var iv = setInterval(function(){
+                sec--;
+                if(sec <= 0){
+                    clearInterval(iv);
+                    timerEl.style.display = 'none';
+                    resendEl.style.display = 'block';
+                } else {
+                    timerEl.textContent = 'Resend in 00:' + (sec < 10 ? '0' : '') + sec;
+                }
+            }, 1000);
+            resendEl.onclick = function(){ startTimer(timerId, resendId); };
+        }
     </script>
 
 </body>
-
 </html>
